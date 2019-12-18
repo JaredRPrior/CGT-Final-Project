@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 def process_line(line):
 	# processes each line in a 
 	# text file formatted: publisher, article, date, stock prices @ date
+	line = line.split(",")
 	publisher = line[0]
 	time = line[2]
 	stocks = line[3]
@@ -16,7 +17,7 @@ def process_line(line):
 def process_file(file):
 	# processes a file
 	# calculates influence from publisher to stock
-	for line in file:
+	for line in file.readlines():
 		publisher, time, stocks = process_line(line)
 		if stocks == False:
 			continue
@@ -25,3 +26,11 @@ def process_file(file):
 			print(delta)
 
 def main():
+	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
+	for file in queries:
+		file_name = file + ".txt"
+		f = open(file_name, "r")
+		process_file(f)
+		f.close()
+
+main()
