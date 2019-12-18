@@ -70,7 +70,7 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
 def main():
     browser = webdriver.Safari()
     ceiling = 15
-    queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI"]
+    queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
     for query in queries:
         url = url_gen(query + "+stock", 1)
         outfile = query + ".txt"
