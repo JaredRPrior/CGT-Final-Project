@@ -25,27 +25,33 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
     table = browser.find_element_by_css_selector("tbody")
     max_page = table.find_elements_by_css_selector("a")
     elem = browser.find_elements_by_css_selector("div.bkWMgd")
+
     for i in elem:
         author = i.find_elements_by_css_selector("a")
         for a in author:
             publisher = i.find_element_by_css_selector("div.pDavDe.RGRr8e")
             title = i.find_element_by_css_selector("div.phYMDf.nDgy9d")  
             try:
-                r = requests.get(a.get_attribute('href'), verify=False)
-                date_published = htmldate.find_date(r.text)
-                stock_info = retrieve_stock_info(stock, date_published)
-                file = open(outfile,"a")
-                string = publisher.text + ", " + title.text.replace("\n", "") + ", " + date_published + str(stock_info)
-                file.write(string)
-                file.write("\n")
-                file.close()
+                write_file(a, outfile, publisher, stock, title)
             except:
-                continue
+                print("Exception")
     if max_page != None and page_number < ceiling:
         url = max_page[len(max_page) - 1].get_attribute('href')
         get_data(url, browser, page_number + 1, ceiling, outfile, stock)
 
+def write_file(a, outfile, publisher, stock, title):
+    # writes data to a file
+    r = requests.get(a.get_attribute('href'), verify=False)
+    date_published = htmldate.find_date(r.text)
+    stock_info = retrieve_stock_info(stock, date_published)
+    file = open(outfile,"a")
+    string = publisher.text + ", " + title.text.replace("\n", "") + ", " + date_published + ", " + str(stock_info)
+    file.write(string)
+    file.write("\n")
+    file.close()
+
 def retrieve_stock_info(stock, date):
+    # uses yfinance to retrieve stock data for the given dates
     date2 = increment_date(date)
     data = yf.download('REKR', date, date2)
     if len(data['Close']) > 1:
@@ -63,8 +69,8 @@ def increment_date(date):
 
 def main():
     browser = webdriver.Safari()
-    ceiling = 1
-    queries = ["REKR"]
+    ceiling = 15
+    queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI"]
     for query in queries:
         url = url_gen(query + "+stock", 1)
         outfile = query + ".txt"
