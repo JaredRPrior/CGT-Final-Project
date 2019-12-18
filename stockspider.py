@@ -15,6 +15,34 @@ def url_gen(query, page_number):
     url = "https://www.google.com/search?q=" + query + "&source=lnms&tbm=nws&start=" + str(page_number - 1) + "0"
     return url
 
+def increment_date(date):
+    # taken and adapted from https://stackoverflow.com/questions/37089765/add-1-day-to-my-date-in-python
+    date2 = datetime.strptime(date, "%Y-%m-%d")
+    date2 = date2 + timedelta(days=1)
+    datetime.strftime(date2, "%Y-%m-%d")
+    date2= str(date2).split(" ")[0]
+    return date2
+
+def retrieve_stock_info(stock, date):
+    # uses yfinance to retrieve stock data for the given dates
+    date2 = increment_date(date)
+    data = yf.download(stock, date, date2)
+    if len(data['Close']) > 1:
+        return (data['Close'][0], data['Close'][1])
+    else:
+        return (data['Close'][0], 0)
+
+def write_file(a, outfile, publisher, stock, title):
+    # writes data to a file
+    r = requests.get(a.get_attribute('href'), verify=False)
+    date_published = htmldate.find_date(r.text)
+    stock_info = retrieve_stock_info(stock, date_published)
+    file = open(outfile,"a")
+    string = publisher.text + ", " + title.text.replace("\n", "") + ", " + date_published + ", " + str(stock_info)
+    file.write(string)
+    file.write("\n")
+    file.close()
+
 def get_data(url, browser, page_number, ceiling, outfile, stock):
     # retrives data from given URL, recursively crawls entire news query
     # until the crawler has reached the page ceiling, or there are no
@@ -38,34 +66,6 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
     if max_page != None and page_number < ceiling:
         url = max_page[len(max_page) - 1].get_attribute('href')
         get_data(url, browser, page_number + 1, ceiling, outfile, stock)
-
-def write_file(a, outfile, publisher, stock, title):
-    # writes data to a file
-    r = requests.get(a.get_attribute('href'), verify=False)
-    date_published = htmldate.find_date(r.text)
-    stock_info = retrieve_stock_info(stock, date_published)
-    file = open(outfile,"a")
-    string = publisher.text + ", " + title.text.replace("\n", "") + ", " + date_published + ", " + str(stock_info)
-    file.write(string)
-    file.write("\n")
-    file.close()
-
-def retrieve_stock_info(stock, date):
-    # uses yfinance to retrieve stock data for the given dates
-    date2 = increment_date(date)
-    data = yf.download('REKR', date, date2)
-    if len(data['Close']) > 1:
-        return (data['Close'][0], data['Close'][1])
-    else:
-        return (data['Close'][0], 0)
-
-def increment_date(date):
-    # taken and adapted from https://stackoverflow.com/questions/37089765/add-1-day-to-my-date-in-python
-    date2 = datetime.strptime(date, "%Y-%m-%d")
-    date2 = date2 + timedelta(days=1)
-    datetime.strftime(date2, "%Y-%m-%d")
-    date2= str(date2).split(" ")[0]
-    return date2
 
 def main():
     browser = webdriver.Safari()
