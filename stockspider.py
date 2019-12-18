@@ -47,7 +47,6 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
     # retrives data from given URL, recursively crawls entire news query
     # until the crawler has reached the page ceiling, or there are no
     # more pages left to crawl in the results
-    print(page_number)
     browser.get(url)
     browser.implicitly_wait(30)
     table = browser.find_element_by_css_selector("tbody")
@@ -63,7 +62,7 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
                 write_file(a, outfile, publisher, stock, title)
             except:
                 print("Exception")
-                
+
     if next_page != None and page_number < ceiling:
         url = next_page[len(next_page) - 1].get_attribute('href')
         get_data(url, browser, page_number + 1, ceiling, outfile, stock)
