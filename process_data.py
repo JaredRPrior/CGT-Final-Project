@@ -16,22 +16,21 @@ def process_line(line):
 	publisher = line[0]
 	time = line[length - 3]
 	stock_d1, stock_d2 = process_tuple_string(line[length - 2:])
-	print(stock_d1, stock_d2)
-	if stock_d2 != float(0.0):
-		return publisher, time, (stock_d1, stock_d2)
+	if stock_d2 == 0 or abs(stock_d1 - stock_d2) == 0:
+		return False
 	else:
-		return publisher, time, False
+		return publisher, time, (stock_d1, stock_d2)
 
 def process_file(file):
 	# processes a file
 	# calculates influence from publisher to stock
 	for line in file.readlines():
-		publisher, time, stocks = process_line(line)
-		if stocks == False:
+		if process_line(line) == False:
 			continue
 		else:
+			publisher, time, stocks = process_line(line)
 			delta = abs(stocks[1] - stocks[0])
-			#print(delta)
+			print(delta)
 
 def main():
 	queries = ["AEG"]
