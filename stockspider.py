@@ -63,6 +63,7 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
                 write_file(a, outfile, publisher, stock, title)
             except:
                 print("Exception")
+                
     if next_page != None and page_number < ceiling:
         url = next_page[len(next_page) - 1].get_attribute('href')
         get_data(url, browser, page_number + 1, ceiling, outfile, stock)
