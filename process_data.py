@@ -17,7 +17,7 @@ def process_line(line):
 	time = line[length - 3]
 	stock_d1, stock_d2 = process_tuple_string(line[length - 2:])
 	print(stock_d1, stock_d2)
-	if stock_d2 != 0:
+	if stock_d2 != float(0.0):
 		return publisher, time, (stock_d1, stock_d2)
 	else:
 		return publisher, time, False
