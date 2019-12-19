@@ -90,6 +90,17 @@ def process_dictionary(dictionary):
 		dictionary = process_helper(absolute, positive, negative, dictionary, publisher)
 	return dictionary
 
+def write_results(file, results, ranking_by):
+	rank = 0
+	file.write(ranking_by)
+	file.write("\n")
+	for i in reversed(results):
+		file.write(str(rank) + ": ")
+		file.write(str(i))
+		file.write("\n")
+		rank += 1
+	file.write("\n")
+
 def main():
 	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
 	graph = {}
@@ -111,23 +122,16 @@ def main():
 			negative += aux_graph[publisher][stock][2]
 			absolute += aux_graph[publisher][stock][0]
 		results.append((publisher, mean_average(absolute), mean_average(positive), mean_average(negative), len(aux_graph[publisher])))
+
+	f = open("results.txt", "w")
 	results.sort(key=lambda x: x[1])
-	print("RANKING BY MEAN ABSOLUTE INFLUENCE")
-	for i in reversed(results):
-		print(i)
-	print(" ")
+	write_results(f, results, "Mean absolute influence")
 	results.sort(key=lambda x: x[2])
-	print("RANKING BY MEAN POSITIVE INFLUENCE")
-	for i in reversed(results):
-		print(i)
-	print(" ")
+	write_results(f, results, "Mean positive influence")
 	results.sort(key=lambda x: x[3])
-	print("RANKING BY MEAN NEGATIVE INFLUENCE")
-	for i in reversed(results):
-		print(i)
-	print(" ")
+	write_results(f, results, "Mean negative influence")
 
 
-	
+
 
 main()
