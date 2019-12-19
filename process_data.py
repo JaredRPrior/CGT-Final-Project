@@ -68,6 +68,7 @@ def process_helper(absolute, positive, negative, dictionary, publisher):
 	# takes each change tuple and assembles absolute, positive, negative change lists
 	# creates a three-tuple as the value for each publishers
 	change = dictionary[publisher]
+	size = len(change)
 	for i in change:
 		absolute.append(i[0])
 		if i[1] > 0:
@@ -79,7 +80,7 @@ def process_helper(absolute, positive, negative, dictionary, publisher):
 	if len(negative) == 0:
 			negative = []
 
-	dictionary[publisher] = (absolute, positive, negative)
+	dictionary[publisher] = (absolute, positive, negative, size)
 	return dictionary
 
 def process_dictionary(dictionary):
@@ -96,7 +97,7 @@ def write_results(file, results, ranking_by):
 	rank = 1
 	file.write(ranking_by)
 	file.write("\n")
-	for i in reversed(results):
+	for i in results:
 		file.write(str(rank) + ": ")
 		file.write(str(i))
 		file.write("\n")
@@ -119,21 +120,25 @@ def main():
 		positive = []
 		negative = []
 		absolute = []
+		size = 0
 		for stock in aux_graph[publisher]:
+			absolute += aux_graph[publisher][stock][0]
 			positive += aux_graph[publisher][stock][1]
 			negative += aux_graph[publisher][stock][2]
-			absolute += aux_graph[publisher][stock][0]
-		results.append((publisher, mean_average(absolute), mean_average(positive), mean_average(negative), len(aux_graph[publisher])))
+			size += aux_graph[publisher][stock][3]
+		results.append((publisher, mean_average(absolute), mean_average(positive), mean_average(negative), len(aux_graph[publisher]), size))
 
 	f = open("results.txt", "w")
 	results.sort(key=lambda x: x[1])
-	write_results(f, results, "Mean absolute influence")
+	write_results(f, reversed(results), "Mean absolute influence")
 	results.sort(key=lambda x: x[2])
-	write_results(f, results, "Mean positive influence")
+	write_results(f, reversed(results), "Mean positive influence")
 	results.sort(key=lambda x: x[3])
 	write_results(f, results, "Mean negative influence")
 	results.sort(key=lambda x: x[4])
-	write_results(f, results, "Publisher degree")
+	write_results(f, reversed(results), "Publisher degree")
+	results.sort(key=lambda x: x[5])
+	write_results(f, reversed(results), "Articles published degree")
 
 
 
