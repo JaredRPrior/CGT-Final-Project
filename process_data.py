@@ -130,6 +130,8 @@ def main():
 	write_results(f, results, "Mean positive influence")
 	results.sort(key=lambda x: x[3])
 	write_results(f, results, "Mean negative influence")
+	results.sort(key=lambda x: x[4])
+	write_results(f, results, "Publisher degree")
 
 
 
