@@ -7,7 +7,12 @@ def represent_undirected_graph(graph):
 	# takes all edges from stock -> publisher, creates publisher -> stock
 	for i in graph:
 		for publisher in graph[i]:
-			print(publisher)
+			print(i, publisher)
+			try:
+				graph[publisher][i] = graph[i][publisher]
+			except:
+				graph[publisher] = {}
+				graph[publisher][i] = graph[i][publisher]
 	return graph
 
 def mean_average(array):
@@ -94,8 +99,8 @@ def main():
 		processed_data = process_dictionary(data)
 		graph[file] = processed_data
 		f.close()
-		graph = represent_undirected_graph(graph)
-		#print(file, graph[file], len(graph[file]))
+		#graph = represent_undirected_graph(graph)
+		print(file, graph[file], len(graph[file]))
 		print(" ")
 
 main()
