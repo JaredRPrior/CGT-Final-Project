@@ -93,7 +93,6 @@ def process_dictionary(dictionary):
 def main():
 	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
 	graph = {}
-	result_dictionary = {}
 	for file in queries:
 		file_name = file + ".txt"
 		f = open(file_name, "r")
@@ -102,6 +101,7 @@ def main():
 		graph[file] = processed_data
 		f.close()
 	aux_graph = represent_undirected_graph(graph)
+	results = []
 	for publisher in aux_graph:
 		positive = []
 		negative = []
@@ -110,11 +110,24 @@ def main():
 			positive += aux_graph[publisher][stock][1]
 			negative += aux_graph[publisher][stock][2]
 			absolute += aux_graph[publisher][stock][0]
+		results.append((publisher, mean_average(absolute), mean_average(positive), mean_average(negative), len(aux_graph[publisher])))
+	results.sort(key=lambda x: x[1])
+	print("RANKING BY MEAN ABSOLUTE INFLUENCE")
+	for i in reversed(results):
+		print(i)
+	print(" ")
+	results.sort(key=lambda x: x[2])
+	print("RANKING BY MEAN POSITIVE INFLUENCE")
+	for i in reversed(results):
+		print(i)
+	print(" ")
+	results.sort(key=lambda x: x[3])
+	print("RANKING BY MEAN NEGATIVE INFLUENCE")
+	for i in reversed(results):
+		print(i)
+	print(" ")
 
-		print(publisher, mean_average(positive), mean_average(negative), mean_average(absolute), len(aux_graph[publisher]))
-		print(" ")
-			
 
-	#print(aux_graph)
+	
 
 main()
