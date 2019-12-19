@@ -5,18 +5,21 @@ from datetime import datetime, timedelta
 def represent_undirected_graph(graph):
 	# might not need it 
 	# takes all edges from stock -> publisher, creates publisher -> stock
+	aux_graph = {}
 	for i in graph:
 		for publisher in graph[i]:
-			print(i, publisher)
 			try:
-				graph[publisher][i] = graph[i][publisher]
+				aux_graph[publisher][i] = graph[i][publisher]
 			except:
-				graph[publisher] = {}
-				graph[publisher][i] = graph[i][publisher]
-	return graph
+				aux_graph[publisher] = {}
+				aux_graph[publisher][i] = graph[i][publisher]
+
+	return aux_graph
 
 def mean_average(array):
 	# find the mean average of an int/float array
+	if len(array) == 0:
+		return 0
 	average = 0
 	for i in array:
 		average += i
@@ -61,37 +64,36 @@ def process_file(file):
 
 	return publisher_influence
 
-def process_helper(absolute_sum, positive, negative, dictionary, publisher):
-	for change in dictionary[publisher]:
-			absolute_sum += change[0]
-			if change[1] > 0:
-				positive.append(change[1])
-			elif change[1] < 0:
-				negative.append(change[1])
+def process_helper(absolute, positive, negative, dictionary, publisher):
+	change = dictionary[publisher]
+	for i in change:
+		absolute.append(i[0])
+		if i[1] > 0:
+			positive.append(i[1])
+		elif i[1] < 0:
+			negative.append(i[1])
 	if len(positive) == 0:
-		positive = 0
-	else:
-		positive = mean_average(positive)
+			positive = []
 	if len(negative) == 0:
-		negative = 0
-	else:
-		negative = mean_average(negative)
-	average = absolute_sum/len(dictionary[publisher])
-	dictionary[publisher] = (average, positive, negative)
+			negative = []
+		# average = absolute_sum/len(dictionary[publisher])
+
+	dictionary[publisher] = (absolute, positive, negative)
 	return dictionary
 
 def process_dictionary(dictionary):
-	# average out the percent change values
+	# aggregate the percent change values
 	for publisher in dictionary:
 		positive = []
 		negative = []
-		absolute_sum = 0
-		dictionary = process_helper(absolute_sum, positive, negative, dictionary, publisher)
+		absolute = []
+		dictionary = process_helper(absolute, positive, negative, dictionary, publisher)
 	return dictionary
 
 def main():
 	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
 	graph = {}
+	result_dictionary = {}
 	for file in queries:
 		file_name = file + ".txt"
 		f = open(file_name, "r")
@@ -99,8 +101,20 @@ def main():
 		processed_data = process_dictionary(data)
 		graph[file] = processed_data
 		f.close()
-		#graph = represent_undirected_graph(graph)
-		print(file, graph[file], len(graph[file]))
+	aux_graph = represent_undirected_graph(graph)
+	for publisher in aux_graph:
+		positive = []
+		negative = []
+		absolute = []
+		for stock in aux_graph[publisher]:
+			positive += aux_graph[publisher][stock][1]
+			negative += aux_graph[publisher][stock][2]
+			absolute += aux_graph[publisher][stock][0]
+
+		print(publisher, mean_average(positive), mean_average(negative), mean_average(absolute), len(aux_graph[publisher]))
 		print(" ")
+			
+
+	#print(aux_graph)
 
 main()
