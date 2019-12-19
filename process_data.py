@@ -65,6 +65,8 @@ def process_file(file):
 	return publisher_influence
 
 def process_helper(absolute, positive, negative, dictionary, publisher):
+	# takes each change tuple and assembles absolute, positive, negative change lists
+	# creates a three-tuple as the value for each publishers
 	change = dictionary[publisher]
 	for i in change:
 		absolute.append(i[0])
@@ -76,7 +78,6 @@ def process_helper(absolute, positive, negative, dictionary, publisher):
 			positive = []
 	if len(negative) == 0:
 			negative = []
-		# average = absolute_sum/len(dictionary[publisher])
 
 	dictionary[publisher] = (absolute, positive, negative)
 	return dictionary
@@ -91,7 +92,8 @@ def process_dictionary(dictionary):
 	return dictionary
 
 def write_results(file, results, ranking_by):
-	rank = 0
+	# writes output rankings to result file
+	rank = 1
 	file.write(ranking_by)
 	file.write("\n")
 	for i in reversed(results):
