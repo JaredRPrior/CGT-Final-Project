@@ -52,14 +52,15 @@ def process_file(file):
 	return publisher_influence
 
 def main():
-	queries = ["AEG"]
+	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
+	graph = {}
 	for file in queries:
 		file_name = file + ".txt"
 		f = open(file_name, "r")
 		data = process_file(f)
 		processed_data = average_delta(data)
-		for i in processed_data:
-			print(i, processed_data[i])
+		graph[file] = processed_data
 		f.close()
+	print(graph)
 
 main()
