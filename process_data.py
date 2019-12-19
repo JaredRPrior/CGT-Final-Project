@@ -61,6 +61,6 @@ def main():
 		processed_data = average_delta(data)
 		graph[file] = processed_data
 		f.close()
-	print(graph)
+	print(graph["POLA"])
 
 main()
