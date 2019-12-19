@@ -2,19 +2,17 @@ from datetime import datetime, timedelta
 # Jared Prior, Ian Culnane
 # processes data scraped by stockspider.py
 
-def represent_undirected_graph(graph):
-	# might not need it 
-	# takes all edges from stock -> publisher, creates publisher -> stock
-	aux_graph = {}
-	for i in graph:
-		for publisher in graph[i]:
-			try:
-				aux_graph[publisher][i] = graph[i][publisher]
-			except:
-				aux_graph[publisher] = {}
-				aux_graph[publisher][i] = graph[i][publisher]
-
-	return aux_graph
+def write_results(file, results, ranking_by):
+	# writes output rankings to result file
+	rank = 1
+	file.write(ranking_by)
+	file.write("\n")
+	for i in results:
+		file.write(str(rank) + ": ")
+		file.write(str(i))
+		file.write("\n")
+		rank += 1
+	file.write("\n")
 
 def mean_average(array):
 	# find the mean average of an int/float array
@@ -31,6 +29,20 @@ def process_tuple_string(stocks):
 	stock_d1 = stocks[0].replace("(", "")
 	stock_d2 = stocks[1].replace(")", "")
 	return float(stock_d1.strip()), float(stock_d2.strip())
+
+def represent_undirected_graph(graph):
+	# might not need it 
+	# takes all edges from stock -> publisher, creates publisher -> stock
+	aux_graph = {}
+	for i in graph:
+		for publisher in graph[i]:
+			try:
+				aux_graph[publisher][i] = graph[i][publisher]
+			except:
+				aux_graph[publisher] = {}
+				aux_graph[publisher][i] = graph[i][publisher]
+
+	return aux_graph
 
 def process_line(line):
 	# processes each line in a 
@@ -64,7 +76,7 @@ def process_file(file):
 
 	return publisher_influence
 
-def process_helper(absolute, positive, negative, dictionary, publisher):
+def process_dictionary_helper(absolute, positive, negative, dictionary, publisher):
 	# takes each change tuple and assembles absolute, positive, negative change lists
 	# creates a three-tuple as the value for each publishers
 	change = dictionary[publisher]
@@ -89,20 +101,8 @@ def process_dictionary(dictionary):
 		positive = []
 		negative = []
 		absolute = []
-		dictionary = process_helper(absolute, positive, negative, dictionary, publisher)
+		dictionary = process_dictionary_helper(absolute, positive, negative, dictionary, publisher)
 	return dictionary
-
-def write_results(file, results, ranking_by):
-	# writes output rankings to result file
-	rank = 1
-	file.write(ranking_by)
-	file.write("\n")
-	for i in results:
-		file.write(str(rank) + ": ")
-		file.write(str(i))
-		file.write("\n")
-		rank += 1
-	file.write("\n")
 
 def main():
 	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
