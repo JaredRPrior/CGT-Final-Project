@@ -4,20 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Jared Prior, Ian Culnane
-# processes data scraped by stockspider.py
+# processes data scraped by stockspider.py and loads it into a graph,
+# after which the data is evaluated and ranked in an attempt to demonstrate
+# the most influential publishers with respect to penny stock prices.
 # has a helper method inspired by https://pythonspot.com/matplotlib-bar-chart/
-
-def write_results(file, results, ranking_by):
-	# writes output rankings to result file
-	rank = 1
-	file.write(ranking_by)
-	file.write("\n")
-	for i in results:
-		file.write(str(rank) + ": ")
-		file.write(str(i))
-		file.write("\n")
-		rank += 1
-	file.write("\n")
 
 def mean_average(array):
 	# find the mean average of an int/float array
@@ -47,6 +37,42 @@ def represent_undirected_graph(graph):
 				aux_graph[publisher][i] = graph[i][publisher]
 
 	return aux_graph
+
+def write_results(file, results, ranking_by):
+	# writes output rankings to result file
+	rank = 1
+	file.write(ranking_by)
+	file.write("\n")
+	for i in results:
+		file.write(str(rank) + ": ")
+		file.write(str(i))
+		file.write("\n")
+		rank += 1
+	file.write("\n")
+
+def sort_results(results, sort_index):
+	# sort and reverse a list by a certain index of the result tuple
+	results.sort(key=lambda x: x[sort_index])
+	results.reverse()
+	return results
+
+def plot_ranking(results, sort_index, label):
+	# credit to https://pythonspot.com/matplotlib-bar-chart/
+	objects = []
+	performance = []
+	plt.figure(figsize= (20, 15))
+	i = 0
+	while i < 10:
+		objects.append(results[i][0])
+		performance.append(results[i][sort_index])
+		i += 1
+	x_pos = np.arange(len(objects))
+	plt.barh(x_pos, performance, align='center', alpha=0.8)
+	plt.yticks(x_pos, objects, fontsize=10)
+	#plt.xlabel('Percent change')
+	plt.title(label)
+	plt.savefig(str(sort_index) +".png")
+	plt.close()
 
 def process_line(line):
 	# processes each line in a 
@@ -108,31 +134,8 @@ def process_dictionary(dictionary):
 		dictionary = process_dictionary_helper(absolute, positive, negative, dictionary, publisher)
 	return dictionary
 
-def plot_ranking(results, sort_index, label):
-	# credit to https://pythonspot.com/matplotlib-bar-chart/
-	objects = []
-	performance = []
-	plt.figure(figsize= (20, 15))
-	i = 0
-	while i < 10:
-		objects.append(results[i][0])
-		performance.append(results[i][sort_index])
-		i += 1
-	x_pos = np.arange(len(objects))
-	plt.barh(x_pos, performance, align='center', alpha=0.8)
-	plt.yticks(x_pos, objects, fontsize=10)
-	#plt.xlabel('Percent change')
-	plt.title(label)
-	plt.savefig(str(sort_index) +".png")
-	plt.close()
-
-def sort_results(results, sort_index):
-	# sort and reverse a list by a certain index of the result tuple
-	results.sort(key=lambda x: x[sort_index])
-	results.reverse()
-	return results
-
 def main():
+	# process query data
 	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV", "OCLN", "SING", "USMJ"]
 	graph = {}
 	for file in queries:
@@ -145,10 +148,10 @@ def main():
 	aux_graph = represent_undirected_graph(graph)
 	results = []
 	for publisher in aux_graph:
-		positive = []
-		negative = []
-		absolute = []
-		size = 0
+		positive = [] # gather all the positive percent change values
+		negative = [] # gather all the negative percent change values
+		absolute = [] # gather all the absolute percent change values
+		size = 0 # initialize article total to 0
 		for stock in aux_graph[publisher]:
 			absolute += aux_graph[publisher][stock][0]
 			positive += aux_graph[publisher][stock][1]
@@ -158,6 +161,7 @@ def main():
 		positive = mean_average(positive)
 		results.append((publisher, mean_average(absolute) * 100, positive * 100, negative * 100, len(aux_graph[publisher]), size, (positive + negative) * 100))
 
+	# record results and create graphs
 	f = open("results.txt", "w")
 
 	results = sort_results(results, 1)
