@@ -1,4 +1,8 @@
 from datetime import datetime, timedelta
+import matplotlib.pyplot as plt; plt.rcdefaults()
+import numpy as np
+import matplotlib.pyplot as plt
+
 # Jared Prior, Ian Culnane
 # processes data scraped by stockspider.py
 
@@ -103,6 +107,28 @@ def process_dictionary(dictionary):
 		dictionary = process_dictionary_helper(absolute, positive, negative, dictionary, publisher)
 	return dictionary
 
+def plot_ranking(results, sort_index, label):
+	objects = []
+	performance = []
+	i = 0
+	while i < 5:
+		objects.append(results[i][0])
+		performance.append(results[i][sort_index])
+		i += 1
+	y_pos = np.arange(len(objects))
+	plt.bar(y_pos, performance, align='center', alpha=0.5)
+	plt.xticks(y_pos, objects)
+	plt.ylabel('Percent change')
+	plt.title(label)
+	plt.show()
+	plt.savefig(str(sort_index) +".png")
+	plt.close()
+
+def sort_results(results, sort_index):
+	results.sort(key=lambda x: x[sort_index])
+	results.reverse()
+	return results
+
 def main():
 	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV", "OCLN", "SING", "USMJ"]
 	graph = {}
@@ -130,18 +156,33 @@ def main():
 		results.append((publisher, mean_average(absolute) * 100, positive * 100, negative * 100, len(aux_graph[publisher]), size, (positive + negative) * 100))
 
 	f = open("results.txt", "w")
-	results.sort(key=lambda x: x[1])
+
+	results = sort_results(results, 1)
+	plot_ranking(results, 1, "Mean absolute influence")
 	write_results(f, reversed(results), "Mean absolute influence")
-	results.sort(key=lambda x: x[2])
+
+	results = sort_results(results, 2)
+	plot_ranking(results, 2, "Mean positive influence")
 	write_results(f, reversed(results), "Mean positive influence")
-	results.sort(key=lambda x: x[3])
+
+	results = sort_results(results, 3)
+	results.reverse()
+	plot_ranking(results, 3, "Mean negative influence")
 	write_results(f, results, "Mean negative influence")
-	results.sort(key=lambda x: x[4])
-	write_results(f, reversed(results), "Publisher degree")
-	results.sort(key=lambda x: x[5])
-	write_results(f, reversed(results), "Articles published")
-	results.sort(key=lambda x: x[6])
+
+	results = sort_results(results, 4)
+	plot_ranking(results, 4, "Publisher degree")
+	write_results(f, results, "Publisher degree")
+
+	results = sort_results(results, 5)
+	plot_ranking(results, 5, "Articles published")
+	write_results(f, results, "Articles published")
+
+	results = sort_results(results, 6)
+	plot_ranking(results, 6, "Sum of mean negative and positive influence")
 	write_results(f, reversed(results), "Sum of mean negative and positive influence")
+
+	f.close()
 
 
 
