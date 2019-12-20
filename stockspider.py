@@ -52,7 +52,6 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
     table = browser.find_element_by_css_selector("tbody")
     next_page = table.find_elements_by_css_selector("a")
     elem = browser.find_elements_by_css_selector("div.bkWMgd")
-
     for i in elem:
         author = i.find_elements_by_css_selector("a")
         publisher = i.find_element_by_css_selector("div.pDavDe.RGRr8e")
