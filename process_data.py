@@ -21,9 +21,9 @@ def mean_average(array):
 
 def process_tuple_string(stocks):
 	# processes stock tuple
-	stock_d1 = stocks[0].replace("(", "")
-	stock_d2 = stocks[1].replace(")", "")
-	return float(stock_d1.strip()), float(stock_d2.strip())
+	stock_day1 = stocks[0].replace("(", "")
+	stock_day2 = stocks[1].replace(")", "")
+	return float(stock_day1.strip()), float(stock_day2.strip())
 
 def represent_undirected_graph(graph):
 	# takes all edges from stock -> publisher, creates {{}...} such that publisher -> stock
@@ -81,11 +81,11 @@ def process_line(line):
 	length = len(line)
 	publisher = line[0]
 	time = line[length - 3]
-	stock_d1, stock_d2 = process_tuple_string(line[length - 2:])
-	if stock_d2 == 0 or abs(stock_d1 - stock_d2) == 0:
+	stock_day1, stock_day2 = process_tuple_string(line[length - 2:])
+	if stock_day2 == 0 or abs(stock_day1 - stock_day2) == 0:
 		return False
 	else:
-		return publisher, time, (stock_d1, stock_d2)
+		return publisher, time, (stock_day1, stock_day2)
 
 def process_file(file):
 	# processes a file
