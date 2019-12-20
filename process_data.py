@@ -125,7 +125,9 @@ def main():
 			positive += aux_graph[publisher][stock][1]
 			negative += aux_graph[publisher][stock][2]
 			size += aux_graph[publisher][stock][3]
-		results.append((publisher, mean_average(absolute), mean_average(positive), mean_average(negative), len(aux_graph[publisher]), size))
+		negative = mean_average(negative)
+		positive = mean_average(positive)
+		results.append((publisher, mean_average(absolute), positive, negative, len(aux_graph[publisher]), size, positive + negative))
 
 	f = open("results.txt", "w")
 	results.sort(key=lambda x: x[1])
@@ -137,6 +139,10 @@ def main():
 	results.sort(key=lambda x: x[4])
 	write_results(f, reversed(results), "Publisher degree")
 	results.sort(key=lambda x: x[5])
-	write_results(f, reversed(results), "Articles published degree")
+	write_results(f, reversed(results), "Articles published")
+	results.sort(key=lambda x: x[6])
+	write_results(f, reversed(results), "Sum of mean negative and positive influence")
+
+
 
 main()
