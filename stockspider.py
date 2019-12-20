@@ -55,9 +55,9 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
 
     for i in elem:
         author = i.find_elements_by_css_selector("a")
-        for a in author:
-            publisher = i.find_element_by_css_selector("div.pDavDe.RGRr8e")
-            title = i.find_element_by_css_selector("div.phYMDf.nDgy9d")  
+        publisher = i.find_element_by_css_selector("div.pDavDe.RGRr8e")
+        title = i.find_element_by_css_selector("div.phYMDf.nDgy9d")
+        for a in author:  
             try:
                 write_file(a, outfile, publisher, stock, title)
             except:
