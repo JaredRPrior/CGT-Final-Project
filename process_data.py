@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 # Jared Prior, Ian Culnane
 # processes data scraped by stockspider.py
+# has a helper method inspired by https://pythonspot.com/matplotlib-bar-chart/
 
 def write_results(file, results, ranking_by):
 	# writes output rankings to result file
