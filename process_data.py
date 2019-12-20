@@ -108,6 +108,7 @@ def process_dictionary(dictionary):
 	return dictionary
 
 def plot_ranking(results, sort_index, label):
+	# credit to https://pythonspot.com/matplotlib-bar-chart/
 	objects = []
 	performance = []
 	plt.figure(figsize= (20, 15))
@@ -125,6 +126,7 @@ def plot_ranking(results, sort_index, label):
 	plt.close()
 
 def sort_results(results, sort_index):
+	# sort and reverse a list by a certain index of the result tuple
 	results.sort(key=lambda x: x[sort_index])
 	results.reverse()
 	return results
