@@ -127,7 +127,7 @@ def main():
 			size += aux_graph[publisher][stock][3]
 		negative = mean_average(negative)
 		positive = mean_average(positive)
-		results.append((publisher, mean_average(absolute), positive, negative, len(aux_graph[publisher]), size, positive + negative))
+		results.append((publisher, mean_average(absolute) * 100, positive * 100, negative * 100, len(aux_graph[publisher]), size, (positive + negative) * 100))
 
 	f = open("results.txt", "w")
 	results.sort(key=lambda x: x[1])
