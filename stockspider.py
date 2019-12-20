@@ -11,7 +11,7 @@ import yfinance as yf
 from datetime import datetime, timedelta
 
 # Authors: Jared Prior and Ian Culnane
-# stockspider.py - scrapes data from Google News queries by using 
+# stockspider.py - scrapes data from Google News queries using 
 # Selenium and htmldate to grab the article info and date-stamp
 # and then queries yfinance for stock information at the given 
 # date and the next day to find the change in stock price following
