@@ -48,7 +48,6 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
     # until the crawler has reached the page ceiling, or there are no
     # more pages left to crawl in the results
     browser.get(url)
-    browser.implicitly_wait(30)
     table = browser.find_element_by_css_selector("tbody")
     next_page = table.find_elements_by_css_selector("a")
     elem = browser.find_elements_by_css_selector("div.bkWMgd")
@@ -69,8 +68,8 @@ def get_data(url, browser, page_number, ceiling, outfile, stock):
 
 def main():
     browser = webdriver.Safari()
-    ceiling = 15
-    queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
+    ceiling = 50
+    queries = ["SING", "USMJ"]
     for query in queries:
         url = url_gen(query + "+stock", 1)
         outfile = query + ".txt"

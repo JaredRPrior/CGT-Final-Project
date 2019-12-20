@@ -31,8 +31,7 @@ def process_tuple_string(stocks):
 	return float(stock_d1.strip()), float(stock_d2.strip())
 
 def represent_undirected_graph(graph):
-	# might not need it 
-	# takes all edges from stock -> publisher, creates publisher -> stock
+	# takes all edges from stock -> publisher, creates {{}...} such that publisher -> stock
 	aux_graph = {}
 	for i in graph:
 		for publisher in graph[i]:
@@ -105,7 +104,7 @@ def process_dictionary(dictionary):
 	return dictionary
 
 def main():
-	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV"]
+	queries = ["AEG", "POLA", "CSLT", "REFR", "SEAC", "SMSI", "REKR", "ENSV", "OCLN", "SING", "USMJ"]
 	graph = {}
 	for file in queries:
 		file_name = file + ".txt"
@@ -139,8 +138,5 @@ def main():
 	write_results(f, reversed(results), "Publisher degree")
 	results.sort(key=lambda x: x[5])
 	write_results(f, reversed(results), "Articles published degree")
-
-
-
 
 main()
