@@ -65,8 +65,8 @@ def process_file(file):
 			continue
 		else:
 			publisher, time, stocks = process_line(line)
-			delta_absolute = abs(stocks[1] - stocks[0])
-			delta = stocks[1] - stocks[0]
+			delta_absolute = abs(stocks[1] - stocks[0])/stocks[0]
+			delta = (stocks[1] - stocks[0])/stocks[0]
 			try: 
 				publisher_influence[publisher].append((delta_absolute, delta))
 			except:
