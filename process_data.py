@@ -110,17 +110,17 @@ def process_dictionary(dictionary):
 def plot_ranking(results, sort_index, label):
 	objects = []
 	performance = []
+	plt.figure(figsize= (20, 15))
 	i = 0
-	while i < 5:
+	while i < 10:
 		objects.append(results[i][0])
 		performance.append(results[i][sort_index])
 		i += 1
-	y_pos = np.arange(len(objects))
-	plt.bar(y_pos, performance, align='center', alpha=0.5)
-	plt.xticks(y_pos, objects)
-	plt.ylabel('Percent change')
+	x_pos = np.arange(len(objects))
+	plt.barh(x_pos, performance, align='center', alpha=0.8)
+	plt.yticks(x_pos, objects, fontsize=10)
+	#plt.xlabel('Percent change')
 	plt.title(label)
-	plt.show()
 	plt.savefig(str(sort_index) +".png")
 	plt.close()
 
@@ -158,16 +158,16 @@ def main():
 	f = open("results.txt", "w")
 
 	results = sort_results(results, 1)
-	plot_ranking(results, 1, "Mean absolute influence")
+	plot_ranking(results, 1, "Mean Absolute Influence")
 	write_results(f, reversed(results), "Mean absolute influence")
 
 	results = sort_results(results, 2)
-	plot_ranking(results, 2, "Mean positive influence")
+	plot_ranking(results, 2, "Mean Positive Influence")
 	write_results(f, reversed(results), "Mean positive influence")
 
 	results = sort_results(results, 3)
 	results.reverse()
-	plot_ranking(results, 3, "Mean negative influence")
+	plot_ranking(results, 3, "Mean Negative Influence")
 	write_results(f, results, "Mean negative influence")
 
 	results = sort_results(results, 4)
@@ -175,11 +175,11 @@ def main():
 	write_results(f, results, "Publisher degree")
 
 	results = sort_results(results, 5)
-	plot_ranking(results, 5, "Articles published")
+	plot_ranking(results, 5, "Articles Published")
 	write_results(f, results, "Articles published")
 
 	results = sort_results(results, 6)
-	plot_ranking(results, 6, "Sum of mean negative and positive influence")
+	plot_ranking(results, 6, "Sum of Mean Negative and Positive Influence")
 	write_results(f, reversed(results), "Sum of mean negative and positive influence")
 
 	f.close()
